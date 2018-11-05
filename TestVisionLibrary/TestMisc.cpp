@@ -272,3 +272,25 @@ void TestDrawDashRect()
     drawDashRect(matResult, 10, 8, cv::Rect(100, 100, 295, 295), cv::Scalar(128,128,128), 2);
     cv::imwrite("./data/TestDashResult.png", matResult);
 }
+
+void TestTransform() {
+    VectorOfFloat vecRow1 = {1.00213778f, 0.00964963343f, 5.18445486e-005f};
+    VectorOfFloat vecRow2 = {-0.0028548548f, 0.999849856f, -1.26561699e-005f};
+    VectorOfVectorOfFloat vecVecTransform = {vecRow1, vecRow2};
+    cv::Mat matTransform = vectorToMat<float>(vecVecTransform);
+    VectorOfVectorOfFloat vecSrc = {{5870.f}, {1470.f}, {1.f}};
+    cv::Mat matSrc = vectorToMat<float>(vecSrc);
+
+    cv::Mat matDst = matTransform * matSrc;
+    auto vecVecDst = matToVector<float>(matDst);
+
+    cv::Mat matTransformInv;//= matTransform.inv(cv::DecompTypes::DECOMP_SVD);
+    cv::invertAffineTransform(matTransform, matTransformInv);
+    cv::transpose(matDst, matDst);
+    
+    vecVecDst.push_back({1.f});
+    cv::Mat matNewDst = vectorToMat<float>(vecVecDst);
+    //cv::transpose(matNewDst, matNewDst);
+    cv::Mat matOriginCalc = matTransformInv * matNewDst;
+    auto vecVecOriginCalc = matToVector<float>(matOriginCalc);
+}

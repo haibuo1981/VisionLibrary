@@ -194,11 +194,11 @@ static void TestCalcUtilsDiff() {
         std::cout << "INPUT: " << std::endl;
         printfMat<float>(matInput);
 
-        matResult = CalcUtils::diff(matInput, 1, 1);
+        matResult = CalcUtils::diff<float>(matInput, 1, 1);
         std::cout << "Diff recursive time 1, dim 1 result: " << std::endl;
         printfMat<float>(matResult);
 
-        matResult = CalcUtils::diff(matInput, 1, 2);
+        matResult = CalcUtils::diff<float>(matInput, 1, 2);
         std::cout << "Diff recursive time 1, dim 2 result: " << std::endl;
         printfMat<float>(matResult);
     }
@@ -219,19 +219,19 @@ static void TestCalcUtilsDiff() {
         std::cout << "INPUT: " << std::endl;
         printfMat<float>(matInput);
 
-        matResult = CalcUtils::diff(matInput, 1, 1);
+        matResult = CalcUtils::diff<float>(matInput, 1, 1);
         std::cout << "Diff recursive time 1, dim 1 result: " << std::endl;
         printfMat<float>(matResult);
 
-        matResult = CalcUtils::diff(matInput, 1, 2);
+        matResult = CalcUtils::diff<float>(matInput, 1, 2);
         std::cout << "Diff recursive time 1, dim 2 result: " << std::endl;
         printfMat<float>(matResult);
 
-        matResult = CalcUtils::diff(matInput, 2, 1);
+        matResult = CalcUtils::diff<float>(matInput, 2, 1);
         std::cout << "Diff recursive time 2, dim 1 result: " << std::endl;
         printfMat<float>(matResult);
 
-        matResult = CalcUtils::diff(matInput, 2, 2);
+        matResult = CalcUtils::diff<float>(matInput, 2, 2);
         std::cout << "Diff recursive time 2, dim 2 result: " << std::endl;
         printfMat<float>(matResult);
     }

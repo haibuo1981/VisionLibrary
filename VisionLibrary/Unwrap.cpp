@@ -414,7 +414,7 @@ inline std::vector<size_t> sort_indexes(const std::vector<T> &v) {
     cv::Mat matPhaseT;
     cv::transpose(matPhase, matPhaseT);
     cv::Mat matTmpPhase = cv::Mat(matPhaseT, cv::Rect(0, 0, matPhaseT.cols, 1));
-    cv::Mat matDp = CalcUtils::diff(matTmpPhase, 1, 2);
+    cv::Mat matDp = CalcUtils::diff<DATA_TYPE>(matTmpPhase, 1, 2);
 
 #ifdef _DEBUG
     auto vecVecDp = CalcUtils::matToVector<DATA_TYPE>( matDp );
@@ -440,7 +440,7 @@ inline std::vector<size_t> sort_indexes(const std::vector<T> &v) {
     auto vecPhaseResult = CalcUtils::matToVector<DATA_TYPE>( matPhaseResult );
 #endif
 
-    matDp = CalcUtils::diff(matPhaseResult, 1, 2);
+    matDp = CalcUtils::diff<DATA_TYPE>(matPhaseResult, 1, 2);
     cv::compare(cv::abs(matDp), cv::Scalar::all(ONE_HALF_CYCLE), matAbsUnderPI, cv::CmpTypes::CMP_LT);
     matDp.setTo(0, matAbsUnderPI);
     _setBySign(matDp, OneCycle);
@@ -686,7 +686,7 @@ static inline cv::Mat calcOrder5BezierCoeff(const cv::Mat &matU) {
     TimeLog::GetInstance()->addTimeLog("cv::transpose. ", stopWatch.Span());
 
     cv::Mat matTmpPhase = cv::Mat(matPhaseT, cv::Rect(0, 0, matPhaseT.cols, 1));
-    cv::Mat matDp = CalcUtils::diff(matTmpPhase, 1, 2);
+    cv::Mat matDp = CalcUtils::diff<DATA_TYPE>(matTmpPhase, 1, 2);
 
 #ifdef _DEBUG
     auto vecVecArray = CalcUtils::matToVector<DATA_TYPE>( dxPhase );
@@ -715,7 +715,7 @@ static inline cv::Mat calcOrder5BezierCoeff(const cv::Mat &matU) {
     cv::transpose(matPhaseT, matPhaseResult);
     matPhaseResult.setTo(cv::Scalar::all(NAN), matBranchCut);
 
-    matDp = CalcUtils::diff(matPhaseResult, 1, 2);
+    matDp = CalcUtils::diff<DATA_TYPE>(matPhaseResult, 1, 2);
     cv::compare(cv::abs(matDp), cv::Scalar::all(ONE_HALF_CYCLE), matAbsUnderPI, cv::CmpTypes::CMP_LT);
     matDp.setTo(0, matAbsUnderPI);
     _setBySign(matDp, ONE_CYCLE);
@@ -865,7 +865,7 @@ static inline cv::Mat calcOrder5BezierCoeff(const cv::Mat &matU) {
     //1. Unwrap from left to right, but to accelerate the operation, transpose the matrix first,
     //and do it from top to bottom, it is the same effect as from left to right on original phase.
     cv::Mat matTmpPhase = cv::Mat(matPhase, cv::Rect(0, 0, 1, ROWS));
-    cv::Mat matDp = CalcUtils::diff(matTmpPhase, 1, 1);
+    cv::Mat matDp = CalcUtils::diff<DATA_TYPE>(matTmpPhase, 1, 1);
 
 #ifdef _DEBUG
     auto vecVecArray = CalcUtils::matToVector<DATA_TYPE>( dxPhase );
@@ -893,7 +893,7 @@ static inline cv::Mat calcOrder5BezierCoeff(const cv::Mat &matU) {
     //2. Unwrap from top to bottom. Because last step do a transpose, this step need to transpose back.
     matPhaseResult.setTo(cv::Scalar::all(NAN), matBranchCut);
 
-    matDp = CalcUtils::diff(matPhaseResult, 1, 2);
+    matDp = CalcUtils::diff<DATA_TYPE>(matPhaseResult, 1, 2);
     cv::compare(cv::abs(matDp), cv::Scalar::all(ONE_HALF_CYCLE), matAbsUnderPI, cv::CmpTypes::CMP_LT);
     matDp.setTo(0, matAbsUnderPI);
     _setBySign(matDp, OneCycle);
@@ -2028,7 +2028,7 @@ static inline cv::Mat calcOrder3Surface(const cv::Mat &matX, const cv::Mat &matY
 
     //X direction
     if (nJumpSpanX > 0) {
-        cv::Mat matPhaseDiff = CalcUtils::diff(matPhase, 1, 2);
+        cv::Mat matPhaseDiff = CalcUtils::diff<DATA_TYPE>(matPhase, 1, 2);
 #ifdef _DEBUG
         //CalcUtils::saveMatToCsv ( matPhase, "./data/HaoYu_20171114/test1/NewLens2/BeforePhaseCorrectionX.csv");
         auto vecVecPhase = CalcUtils::matToVector<float>(matPhase);
@@ -2126,7 +2126,7 @@ static inline cv::Mat calcOrder3Surface(const cv::Mat &matX, const cv::Mat &matY
 
     // Y direction
     if (nJumpSpanY > 0) {
-        cv::Mat matPhaseDiff = CalcUtils::diff(matPhase, 1, 1);
+        cv::Mat matPhaseDiff = CalcUtils::diff<DATA_TYPE>(matPhase, 1, 1);
 #ifdef _DEBUG
         //CalcUtils::saveMatToCsv ( matPhase, "./data/HaoYu_20171114/test5/NewLens2/BeforePhaseCorrectionY.csv");
         auto vecVecPhase = CalcUtils::matToVector<float>(matPhase);
@@ -2341,7 +2341,7 @@ void Unwrap::_turnPhase(cv::Mat &matPhase, cv::Mat &matPhaseDiff, char *ptrSignO
     const int COLS = matPhase.cols;
     TimeLog::GetInstance()->addTimeLog("_phaseSwitch.", stopWatch.Span());
 
-    cv::Mat matPhaseDiff = CalcUtils::diff(matPhase, 1, 2);
+    cv::Mat matPhaseDiff = CalcUtils::diff<DATA_TYPE>(matPhase, 1, 2);
 #ifdef _DEBUG
     //CalcUtils::saveMatToCsv ( matPhase, "./data/HaoYu_20171114/test1/NewLens2/BeforePhaseCorrectionX.csv");
     auto vecVecPhase = CalcUtils::matToVector<float>(matPhase);
@@ -2747,7 +2747,7 @@ void _saveAsGray(const cv::Mat &matHeight, const std::string &strFilePath) {
 
         cv::Mat matNanMasks = CalcUtils::getNanMask(matRowFor);
         matNanMasks.convertTo(matNanMasks, CV_32FC1);
-        cv::Mat matDiffAbs = cv::abs(CalcUtils::diff(matNanMasks, 1, CalcUtils::DIFF_ON_X_DIR));
+        cv::Mat matDiffAbs = cv::abs(CalcUtils::diff<DATA_TYPE>(matNanMasks, 1, CalcUtils::DIFF_ON_X_DIR));
         std::deque<int> dequeIndex;
         for (int col = 0; col < matDiffAbs.cols; ++ col)
             if (matDiffAbs.at<float>(col) > 0)
@@ -2799,6 +2799,148 @@ void _saveAsGray(const cv::Mat &matHeight, const std::string &strFilePath) {
     return matHeightFor;
 }
 
+/*static*/ cv::Mat Unwrap::_mergeHeightIntersectNew(cv::Mat &matHeightOne, const cv::Mat &matNanMaskOne, cv::Mat &matHeightTwo, const cv::Mat &matNanMaskTwo, float fDiffThreshold, PR_DIRECTION enProjDir) {
+    CStopWatch stopWatch;
+
+    if (PR_DIRECTION::UP == enProjDir || PR_DIRECTION::DOWN == enProjDir) {
+        cv::transpose(matHeightOne, matHeightOne);
+        cv::transpose(matHeightTwo, matHeightTwo);
+    }
+
+    cv::Mat matHeightFour = (matHeightOne + matHeightTwo) / 2.f; // For means Four
+    matHeightTwo.copyTo(matHeightFour, matNanMaskOne);
+    matHeightOne.copyTo(matHeightFour, matNanMaskTwo);
+    cv::Mat matHeightFive = matHeightFour.clone();
+    cv::Mat matHeightOneInRow = matHeightOne.reshape(1, 1);
+    cv::Mat matHeightTwoInRow = matHeightTwo.reshape(1, 1);
+
+    cv::Mat matAbsDiff, matBigDiffMask;
+    cv::absdiff(matHeightOne, matHeightTwo, matAbsDiff);
+    matBigDiffMask = matAbsDiff > fDiffThreshold;
+    cv::Mat matMaskChar = cv::Mat::zeros(matBigDiffMask.size(), CV_8SC1);
+    matMaskChar.setTo(1, matBigDiffMask);
+
+    cv::Mat matColFirst = matMaskChar.col(0);  matColFirst.setTo(0);
+    cv::Mat matColLast  = matMaskChar.col(matMaskChar.cols - 1);  matColLast.setTo(0);
+    cv::Mat matMaskCharOneRow = matMaskChar.reshape(1, 1);
+    matMaskCharOneRow.convertTo(matMaskCharOneRow, CV_32FC1);
+    cv::Mat matDiff = CalcUtils::diff<float>(matMaskCharOneRow, 1, CalcUtils::DIFF_ON_X_DIR);
+
+    // Reuse the memory of matMaskCharOneRow to add 0 to the end of diff.
+    // TO make the diff size as the original data size.
+    cv::Mat matTmp(matMaskCharOneRow, cv::Range(0, 1), cv::Range(0, matDiff.cols));
+    matDiff.copyTo(matTmp);
+    matDiff = matMaskCharOneRow;
+    matDiff.at<DATA_TYPE>(ToInt32(matDiff.total()) - 1) = 0.f;
+    matDiff.convertTo(matDiff, CV_8UC1);
+
+    VectorOfPoint vecPoints;
+    cv::findNonZero(matDiff, vecPoints);
+    if (vecPoints.empty()) {
+        if (PR_DIRECTION::UP == enProjDir || PR_DIRECTION::DOWN == enProjDir)
+            cv::transpose(matHeightFour, matHeightFour);
+        return matHeightFour;
+    }
+
+    std::vector<int> vecIndexs1, vecIndexs2, vecLength;
+    int index = 0;
+    for (const auto& point : vecPoints) {
+        if (index % 2 == 0) vecIndexs1.push_back(point.x);
+        else                vecIndexs2.push_back(point.x);
+        ++ index;
+    }
+
+    auto size = std::min(vecIndexs1.size(), vecIndexs2.size());
+    for (size_t i = 0; i < size; ++ i)
+        vecLength.push_back(vecIndexs2[i] - vecIndexs1[i] + 1);
+    auto sortedIndex = CalcUtils::sort_index_value(vecLength);
+
+    int nLength = vecLength[0];
+    int i = 0;
+    while(i < vecLength.size()) {
+        std::vector<int> vecIndexBatch;
+        int j = i;
+        for (; j < vecLength.size(); ++ j, ++ i) {
+            if (vecLength[j] == nLength)
+                vecIndexBatch.push_back(j);
+            else
+                break;
+        }
+
+        std::vector<DATA_TYPE> vecDataStart, vecDataEnd;
+        vecDataStart.reserve(vecIndexBatch.size());
+        vecDataStart.reserve(vecIndexBatch.size());
+        for (const auto& index : vecIndexBatch) {
+            vecDataStart.push_back(matHeightFive.at<DATA_TYPE>(vecIndexs1[sortedIndex[index]]));
+            vecDataEnd.push_back(matHeightFive.at<DATA_TYPE>(vecIndexs2[sortedIndex[index]]));
+        }
+
+        cv::Mat matDataStart(vecDataStart); cv::Mat matNanMaskStart = CalcUtils::getNanMask(matDataStart);
+        cv::Mat matDataEnd(vecDataEnd);     cv::Mat matNanMaskEnd   = CalcUtils::getNanMask(matDataEnd);
+        matDataEnd.copyTo(matDataStart, matNanMaskStart);
+        matDataStart.copyTo(matDataEnd, matNanMaskEnd);
+
+        cv::Mat matDeltaStep = (matDataEnd - matDataStart) / ToFloat(nLength - 1);
+        cv::Mat matCompare = cv::repeat(matDataStart, 1, nLength);
+        cv::Mat matStep = CalcUtils::intervals<float>(0, 1, ToFloat(nLength - 1));
+        cv::transpose(matStep, matStep);
+        cv::Mat matStepRepeat = cv::repeat(matStep, matCompare.rows, 1);
+        cv::Mat matMultiply;
+        cv::multiply(matStepRepeat, matStepRepeat, matMultiply);
+        matCompare = matCompare + matMultiply;
+        cv::Mat matTmpHeightOne = cv::Mat::zeros(ToInt32(vecIndexBatch.size()), nLength, CV_32FC1);
+        cv::Mat matTmpHeightTwo = cv::Mat::zeros(ToInt32(vecIndexBatch.size()), nLength, CV_32FC1);
+        matHeightFour = matHeightFour.reshape(1, 1);
+        for (int k = 0; k < ToInt32(vecIndexBatch.size()); ++ k) {
+            int nStart = vecIndexs1[sortedIndex[vecIndexBatch[k]]];
+            int nEnd = vecIndexs2[sortedIndex[vecIndexBatch[k]]];
+
+            cv::Mat matDstOne(matTmpHeightOne, cv::Range(k, k+1), cv::Range(0, nLength));
+            cv::Mat matSrcOne(matHeightOneInRow, cv::Range(0, 1), cv::Range(nStart, nEnd + 1));
+            matSrcOne.copyTo(matDstOne);
+
+            auto& valueOneFirst = matDstOne.at<DATA_TYPE>(0);
+            if (std::isnan(valueOneFirst))
+                valueOneFirst = matDstOne.at<DATA_TYPE>(1);
+            auto &valueOneLast = matDstOne.at<DATA_TYPE>(nLength - 1);
+            if (std::isnan(valueOneLast))
+                valueOneLast = matDstOne.at<DATA_TYPE>(nLength - 2);
+
+            cv::Mat matDstTwo(matTmpHeightTwo, cv::Range(k, k+1), cv::Range(0, nLength));
+            cv::Mat matSrcTwo(matHeightTwoInRow, cv::Range(0, 1), cv::Range(nStart, nEnd + 1));
+            matSrcTwo.copyTo(matDstTwo);
+
+            auto& valueTwoFirst = matDstTwo.at<DATA_TYPE>(0);
+            if (std::isnan(valueTwoFirst))
+                valueTwoFirst = matDstTwo.at<DATA_TYPE>(1);
+            auto &valueTwoLast = matDstTwo.at<DATA_TYPE>(nLength - 1);
+            if (std::isnan(valueTwoLast))
+                valueTwoLast = matDstTwo.at<DATA_TYPE>(nLength - 2);
+
+            cv::Mat matComareRow = matCompare.row(k);
+            double errOne = cv::mean(cv::abs(matDstOne - matComareRow))[0];
+            double errTwo = cv::mean(cv::abs(matDstTwo - matComareRow))[0];
+            double errTre = cv::mean(cv::abs((matDstOne + matDstTwo) / 2.f - matComareRow))[0];
+            if (errOne < errTwo && errOne < errTre) {
+                cv::Mat matToUpdate(matHeightFour, cv::Range(0, 1), cv::Range(nStart, nEnd + 1));
+                matDstOne.copyTo(matToUpdate);
+            }else if (errTwo < errOne && errTwo < errTre) {
+                cv::Mat matToUpdate(matHeightFour, cv::Range(0, 1), cv::Range(nStart, nEnd + 1));
+                matDstTwo.copyTo(matToUpdate);
+            }
+        }
+
+        // Update the length for the next round.
+        if (j < vecLength.size())
+            nLength = vecLength[j];
+    }
+
+    matHeightFour = matHeightFour.reshape(1, matHeightOne.rows);
+    if (PR_DIRECTION::UP == enProjDir || PR_DIRECTION::DOWN == enProjDir)
+        cv::transpose(matHeightFour, matHeightFour);
+    return matHeightFour;
+}
+
 /*static*/ cv::Mat Unwrap::_mergeHeightMax(cv::Mat &matHeightOne, const cv::Mat &matNanMaskOne, cv::Mat &matHeightTwo, const cv::Mat &matNanMaskTwo, float fDiffThreshold, PR_DIRECTION enProjDir) {
     CStopWatch stopWatch;
     cv::Mat matHeight = cv::Mat::zeros(matHeightOne.size(), matHeightOne.type());
@@ -2817,7 +2959,7 @@ void _saveAsGray(const cv::Mat &matHeight, const std::string &strFilePath) {
     matIdxH0 = matIdxH0 & matNonNanMaskOne & matNonNanMaskTwo;
 
     matHeightTwo.copyTo(matHeight, matIdxH1);
-    matHeightOne.copyTo(matHeight, matIdxH2);    
+    matHeightOne.copyTo(matHeight, matIdxH2);
 
     cv::add(matHeightOne / 2.f, matHeightTwo / 2.f, matHeight, matIdxH0);
     TimeLog::GetInstance()->addTimeLog("Merge height.", stopWatch.Span());
@@ -2971,7 +3113,7 @@ void _saveAsGray(const cv::Mat &matHeight, const std::string &strFilePath) {
     int filterSize = ToInt32(matFetch.cols * 0.05);
     cv::Mat matFilter;
     cv::blur(matFetch, matFilter, cv::Size(filterSize, 1), cv::Point(-1, -1), cv::BorderTypes::BORDER_REPLICATE);
-    cv::Mat matDiff = CalcUtils::diff(matFilter, 1, CalcUtils::DIFF_ON_X_DIR).clone(), matDiffFilter;
+    cv::Mat matDiff = CalcUtils::diff<DATA_TYPE>(matFilter, 1, CalcUtils::DIFF_ON_X_DIR).clone(), matDiffFilter;
     cv::blur(matDiff, matDiffFilter, cv::Size(filterSize, 1), cv::Point(-1, -1), cv::BorderTypes::BORDER_REPLICATE);
 #ifdef _DEBUG
     auto vecVecCheckOneRow = CalcUtils::matToVector<DATA_TYPE>(matCheckOneRow);

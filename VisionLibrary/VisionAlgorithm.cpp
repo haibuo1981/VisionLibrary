@@ -4519,7 +4519,7 @@ VisionStatus VisionAlgorithm::_findLineByCaliper(const cv::Mat &matInputImg, con
     cv::Mat matBW = matRow > (vecThreshold[1]);
     cv::medianBlur(matBW, matBW, 9);
     matBW.convertTo(matBW, CV_32FC1);
-    cv::Mat matBWDiff = CalcUtils::diff(matBW, 1, 2);
+    cv::Mat matBWDiff = CalcUtils::diff<float>(matBW, 1, 2);
 #ifdef _DEBUG
     auto vecRow = CalcUtils::matToVector<uchar>(matRow);
     auto vecBW = CalcUtils::matToVector<float>(matBW);
@@ -8452,7 +8452,7 @@ VisionStatus VisionAlgorithm::_findLineByCaliper(const cv::Mat &matInputImg, con
         cv::Mat matThreshold;
         cv::threshold(matCol, matThreshold, th, PR_MAX_GRAY_LEVEL, cv::ThresholdTypes::THRESH_BINARY);
         matThreshold.convertTo(matThreshold, CV_32FC1);
-        cv::Mat matDiff = CalcUtils::diff(matThreshold, 1, CalcUtils::DIFF_ON_X_DIR);
+        cv::Mat matDiff = CalcUtils::diff<float>(matThreshold, 1, CalcUtils::DIFF_ON_X_DIR);
 #ifdef _DEBUG
         auto vecVecThreshold = CalcUtils::matToVector<float>(matThreshold);
         auto vecVecDiff = CalcUtils::matToVector<float>(matDiff);

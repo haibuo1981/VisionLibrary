@@ -99,8 +99,8 @@ public:
         matPoint.at<_Tp>(0, 0) = ptInput.x;
         matPoint.at<_Tp>(1, 0) = ptInput.y;
         matPoint.at<_Tp>(2, 0) = 1.f;
-        cv::Mat matResultImg = matWarp * matPoint;
-        return cv::Point_<_Tp>(ToFloat(matResultImg.at<_Tp>(0, 0)), ToFloat(matResultImg.at<_Tp>(1, 0)));
+        cv::Mat matResult = matWarp * matPoint;
+        return cv::Point_<_Tp>(ToFloat(matResult.at<_Tp>(0, 0)), ToFloat(matResult.at<_Tp>(1, 0)));
     }
 
     template<typename _MatType, typename T>
@@ -325,16 +325,17 @@ public:
         DIFF_ON_X_DIR = 2,
     };
 
+    template<typename _tp>
     static inline cv::Mat diff(const cv::Mat &matInput, int nRecersiveTime, int nDimension) {
         assert(DIFF_ON_X_DIR == nDimension || DIFF_ON_Y_DIR == nDimension);
         if (nRecersiveTime > 1)
-            return diff(diff(matInput, nRecersiveTime - 1, nDimension), 1, nDimension);
+            return diff<_tp>(diff<_tp>(matInput, nRecersiveTime - 1, nDimension), 1, nDimension);
 
         cv::Mat matKernel;
         if (DIFF_ON_X_DIR == nDimension)
-            matKernel = (cv::Mat_<float>(1, 2) << -1, 1);
+            matKernel = (cv::Mat_<_tp>(1, 2) << -1, 1);
         else if (DIFF_ON_Y_DIR == nDimension)
-            matKernel = (cv::Mat_<float>(2, 1) << -1, 1);
+            matKernel = (cv::Mat_<_tp>(2, 1) << -1, 1);
 
         cv::Mat matResult;
         cv::filter2D(matInput, matResult, -1, matKernel, cv::Point(-1, -1), 0.0, cv::BORDER_CONSTANT);

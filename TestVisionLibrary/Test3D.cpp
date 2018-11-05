@@ -71,7 +71,7 @@ cv::Mat readMatFromCsvFile(const std::string &strFilePath) {
 
 void saveMatToCsv(cv::Mat &matrix, std::string filename){
     std::ofstream outputFile(filename);
-    outputFile << cv::format(matrix, cv::Formatter::FMT_CSV) << std::endl;
+    outputFile << cv::format(matrix, cv::Formatter::FMT_CSV);
     outputFile.close();
 }
 
@@ -1310,8 +1310,8 @@ void TestMergeHeightMax() {
     std::string strResultFolder = strParentFolder + "Frame_4_Result/";
 
     PR_MERGE_3D_HEIGHT_CMD stMergeHCmd;
-    PR_MERGE_3D_HEIGHT_RPY stMergeHRpy;   
-    stMergeHCmd.enMethod = PR_MERGE_3D_HT_METHOD::SELECT_MAX;
+    PR_MERGE_3D_HEIGHT_RPY stMergeHRpy;
+    stMergeHCmd.enMethod = PR_MERGE_3D_HT_METHOD::SELECT_NEAREST_INTERSECT;
     stMergeHCmd.fHeightDiffThreshold = 0.2f;
 
     for (int i = 0; i < 2; ++ i) {

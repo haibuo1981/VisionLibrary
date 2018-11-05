@@ -637,11 +637,6 @@ int _tmain(int argc, _TCHAR* argv[])
     PR_GetVersion(&stVersionInfo);
     std::cout << "VisionLibrary Version: " << stVersionInfo.chArrVersion << std::endl;
 
-    float fTest = -1.2f;
-    int nTest = static_cast<int>(fTest);
-
-    auto fFloorResult = std::floor(fTest);
-
     PR_Init();
     PR_SetDebugMode(PR_DEBUG_MODE::LOG_ALL_CASE);
 
@@ -749,7 +744,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //TestMotor3DCalib();
 
     //TestCalc4DLPHeight();
-    //TestMergeHeightMax();
+    TestMergeHeightMax();
 
     //TestInsp3DSolder();
     //TestInsp3DSolder_1();
@@ -770,8 +765,10 @@ int _tmain(int argc, _TCHAR* argv[])
     //TestInspPolarity_01();
     
     //TestOCV_1();
-    TestOCV_2();
+    //TestOCV_2();
     //TestOCV_3();
+    
+    //TestTransform();
 
     //TestMatchTmpl_1();
 
